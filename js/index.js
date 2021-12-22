@@ -1,4 +1,3 @@
-// элементы в DOM можно получить при помощи функции querySelector
 const fruitsList = document.querySelector('.fruits__list'); // список карточек
 const shuffleButton = document.querySelector('.shuffle__btn'); // кнопка перемешивания
 const filterButton = document.querySelector('.filter__btn'); // кнопка фильтрации
@@ -10,14 +9,14 @@ const kindInput = document.querySelector('.kind__input'); // поле с наз�
 const colorInput = document.querySelector('.color__input'); // поле с названием цвета
 const weightInput = document.querySelector('.weight__input'); // поле с весом
 const addActionButton = document.querySelector('.add__action__btn'); // кнопка добавления
+const fruitsItem = document.querySelectorAll('.fruit__item');
 
-// список фруктов в JSON формате
 let fruitsJSON = `[
-  {"kind": "Мангустин", "color": "фиолетовый", "weight": 13},
-  {"kind": "Дуриан", "color": "зеленый", "weight": 35},
-  {"kind": "Личи", "color": "розово-красный", "weight": 17},
-  {"kind": "Карамбола", "color": "желтый", "weight": 28},
-  {"kind": "Тамаринд", "color": "светло-коричневый", "weight": 22}
+  {"kind": "Мангустин", "color": "violet", "weight": 13},
+  {"kind": "Дуриан", "color": "green", "weight": 35},
+  {"kind": "Личи", "color": "carmazin", "weight": 17},
+  {"kind": "Карамбола", "color": "yellow", "weight": 28},
+  {"kind": "Тамаринд", "color": "lightbrown", "weight": 22}
 ]`;
 
 // преобразование JSON в объект JavaScript
@@ -25,15 +24,55 @@ let fruits = JSON.parse(fruitsJSON);
 
 /*** ОТОБРАЖЕНИЕ ***/
 
+const createBlock = (selectorName, className) => {
+
+    const selector = document.createElement(selectorName);
+
+    if(className){
+      selector.classList.add(className);
+    }
+
+    return selector;
+}
+
+
 // отрисовка карточек
-const display = () => {
-  // TODO: очищаем fruitsList от вложенных элементов,
-  // чтобы заполнить актуальными данными из fruits
+const display = oldChild => {
+
+  const lengthKeys = Object.keys(fruits).length;
+
+  const removeNodesFromList = () => {
+
+    while (fruitsList.firstChild) {
+      fruitsList.removeChild(fruitsList.firstChild);
+    }
+  };
+
+  removeNodesFromList();
 
   for (let i = 0; i < fruits.length; i++) {
-    // TODO: формируем новый элемент <li> при помощи document.createElement,
-    // и добавляем в конец списка fruitsList при помощи document.appendChild
+
+    const elementFruitsList = createBlock('li','fruit__item');
+    const elementFruitsBlock = createBlock('div','fruit__info');
+    let firstElementBlockInside = createBlock('div', '');
+
+    elementFruitsList.classList.add('fruit_' + fruits[i].color.toString());
+
+    fruitsList.appendChild(elementFruitsList);
+    elementFruitsList.appendChild(elementFruitsBlock);
+
+    elementFruitsBlock.appendChild(firstElementBlockInside);
+    firstElementBlockInside.innerHTML =  'index: ' + i;
+
+    for (const property in fruits[i]) {
+      let elementBlockInside = createBlock('div', '');
+
+      elementBlockInside.innerHTML =  `${property}: ${fruits[i][property]}`;
+      elementFruitsBlock.appendChild(elementBlockInside);
+    }
   }
+
+  return fruitsList;
 };
 
 // первая отрисовка карточек
@@ -179,3 +218,14 @@ addActionButton.addEventListener('click', () => {
   // необходимые значения берем из kindInput, colorInput, weightInput
   display();
 });
+
+replaceText('weight:', 'weight (кг):', 'div');
+
+function replaceText(find, withWhat, selector) {
+
+  const elementFind = document.querySelectorAll(selector);
+
+  elementFind.forEach((element) => {
+    element.innerHTML = element.innerHTML.replace(find, withWhat);
+  })
+}
