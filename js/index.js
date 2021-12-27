@@ -29,49 +29,49 @@ let fruits = JSON.parse(fruitsJSON);
 /*** ОТОБРАЖЕНИЕ ***/
 
 const createBlock = (selectorName, className) => {
-  const selector = document.createElement(selectorName);
+    const selector = document.createElement(selectorName);
 
-  if(className){
-    selector.classList.add(className);
-  }
+    if(className){
+        selector.classList.add(className);
+    }
 
-  return selector;
+    return selector;
 }
 
 // отрисовка карточек
 const display = () => {
-  const removeNodesFromList = () => {
+    const removeNodesFromList = () => {
 
-    while (fruitsList.firstChild) {
-      fruitsList.removeChild(fruitsList.firstChild);
+        while (fruitsList.firstChild) {
+            fruitsList.removeChild(fruitsList.firstChild);
+        }
+    };
+
+    removeNodesFromList();
+
+    for (let i = 0; i < fruits.length; i++) {
+
+        const elementFruitsList = createBlock('li','fruit__item');
+        const elementFruitsBlock = createBlock('div','fruit__info');
+        let firstElementBlockInside = createBlock('div', '');
+
+        elementFruitsList.classList.add('fruit_' + fruits[i].color.toString());
+
+        fruitsList.appendChild(elementFruitsList);
+        elementFruitsList.appendChild(elementFruitsBlock);
+
+        elementFruitsBlock.appendChild(firstElementBlockInside);
+        firstElementBlockInside.innerHTML =  'index: ' + i;
+
+        for (const property in fruits[i]) {
+            let elementBlockInside = createBlock('div', '');
+
+            elementBlockInside.innerHTML =  `${property}: ${fruits[i][property]}`;
+            elementFruitsBlock.appendChild(elementBlockInside);
+        }
     }
-  };
 
-  removeNodesFromList();
-
-  for (let i = 0; i < fruits.length; i++) {
-
-    const elementFruitsList = createBlock('li','fruit__item');
-    const elementFruitsBlock = createBlock('div','fruit__info');
-    let firstElementBlockInside = createBlock('div', '');
-
-    elementFruitsList.classList.add('fruit_' + fruits[i].color.toString());
-
-    fruitsList.appendChild(elementFruitsList);
-    elementFruitsList.appendChild(elementFruitsBlock);
-
-    elementFruitsBlock.appendChild(firstElementBlockInside);
-    firstElementBlockInside.innerHTML =  'index: ' + i;
-
-    for (const property in fruits[i]) {
-      let elementBlockInside = createBlock('div', '');
-
-      elementBlockInside.innerHTML =  `${property}: ${fruits[i][property]}`;
-      elementFruitsBlock.appendChild(elementBlockInside);
-    }
-  }
-
-  return fruitsList;
+    return fruitsList;
 };
 
 // первая отрисовка карточек
@@ -81,53 +81,53 @@ display();
 
 // генерация случайного числа в заданном диапазоне
 const getRandomInt = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 // перемешивание массива
 const shuffleFruits = (fruitsTemp) => {
-  let result = [];
+    let result = [];
 
-  while (fruitsTemp.length > 0) {
-    let endElement = fruitsTemp.length - 1;
-    let temp = getRandomInt(0, endElement);
-    result.push(fruitsTemp[temp]);
-    fruitsTemp.splice(temp,1);
-  }
+    while (fruitsTemp.length > 0) {
+        let endElement = fruitsTemp.length - 1;
+        let temp = getRandomInt(0, endElement);
+        result.push(fruitsTemp[temp]);
+        fruitsTemp.splice(temp,1);
+    }
 
-  fruitsTemp = result;
+    fruitsTemp = result;
 
-  return fruitsTemp;
+    return fruitsTemp;
 };
 
 // проверка на перемешанный массив
 const checkForAShuffled = (fruitsTemp) => {
-  const oldFruits = fruitsTemp.slice();
+    const oldFruits = fruitsTemp.slice();
 
-  fruitsTemp = shuffleFruits(fruitsTemp);
+    fruitsTemp = shuffleFruits(fruitsTemp);
 
-  if (fruitsTemp.length === oldFruits.length && (fruitsTemp.every((v,i)=>v === oldFruits[i])) === true) {
-    alert('порядок не изменился!');
-    fruitsTemp = oldFruits;
-  }
+    if (fruitsTemp.length === oldFruits.length && (fruitsTemp.every((v,i)=>v === oldFruits[i])) === true) {
+        alert('порядок не изменился!');
+        fruitsTemp = oldFruits;
+    }
 
-  return fruitsTemp;
+    return fruitsTemp;
 }
 
 shuffleButton.addEventListener('click', () => {
-  fruits = checkForAShuffled(fruits);
-  display();
+    fruits = checkForAShuffled(fruits);
+    display();
 });
 
 /*** ФИЛЬТРАЦИЯ ***/
 
 // проверка на пустоту
 const checkEmpty = (arg, defaultArg) => {
-  if (arg.value.length === 0) {
-    arg.value = defaultArg;
-  }
+    if (arg.value.length === 0) {
+        arg.value = defaultArg;
+    }
 
-  return arg.value;
+    return arg.value;
 };
 
 /*
@@ -160,46 +160,43 @@ const applyNumber = (arg1, arg2) => {
 
 // проверка на границы weight
 const checkBorderWeight = (min, max) => {
-  if (parseInt(min) > parseInt(max)) {
-    min = getRandomInt(0, 10);
-    max = getRandomInt(10, 100);
+    if (parseInt(min) > parseInt(max)) {
+        min = getRandomInt(0, 10);
+        max = getRandomInt(10, 100);
 
-    alert( `Вы перепутали границы минимального и максимального значения. Я сгенерировал их сам от ${min} до ${max}.`);
-  }
+        alert( `Вы перепутали границы минимального и максимального значения. Я сгенерировал их сам от ${min} до ${max}.`);
+    }
 
-  return [
-      min,
-      max,
-  ];
+    return [
+        min,
+        max,
+    ];
 };
 
 // применить границы weight
 const applyBorders = (arg) => {
-  minWeight.value = arg[0];
-  maxWeight.value = arg[1];
+    minWeight.value = arg[0];
+    maxWeight.value = arg[1];
 };
-
 
 // фильтрация массива
 const filterFruits = () => {
-  return fruits.filter((item) => {
-    return (maxWeight.value >= item.weight && item.weight >= minWeight.value);
-  });
+    fruits = fruits.filter((item) => {
+        return (maxWeight.value >= item.weight && item.weight >= minWeight.value);
+    });
 };
 
 filterButton.addEventListener('click', () => {
-  checkEmpty(minWeight, getRandomInt(0,20));
-  checkEmpty(maxWeight, getRandomInt(20,30));
+    checkEmpty(minWeight, getRandomInt(0,20));
+    checkEmpty(maxWeight, getRandomInt(20,30));
 
-  //applyNumber(checkNumber(minWeight.value), checkNumber(maxWeight.value));
+    //applyNumber(checkNumber(minWeight.value), checkNumber(maxWeight.value));
 
-  const borderWeight = checkBorderWeight(minWeight.value, maxWeight.value);
-  applyBorders(borderWeight);
+    const borderWeight = checkBorderWeight(minWeight.value, maxWeight.value);
+    applyBorders(borderWeight);
 
-  const oldFruits = fruits;
-  fruits = filterFruits();
-  display();
-  //fruits = oldFruits;
+    filterFruits();
+    display();
 });
 
 /*** СОРТИРОВКА ***/
@@ -207,60 +204,77 @@ filterButton.addEventListener('click', () => {
 let sortKind = 'bubbleSort'; // инициализация состояния вида сортировки
 let sortTime = '-'; // инициализация состояния времени сортировки
 
+const HEXtoBright = (hex) => {
+    return (parseInt(hex.substring(1, 2),16) + parseInt(hex.substring(3, 4),16) + parseInt(hex.substring(5, 6),16));
+}
+
 const comparisonColor = (a, b) => {
-  // TODO: допишите функцию сравнения двух элементов по цвету
-  console.log(a);
-  console.log(b);
+
+    const brightA = HEXtoBright(a);
+    const brightB = HEXtoBright(b);
+
+    return brightA <= brightB;
 };
 
 const sortAPI = {
-  bubbleSort(arr, comparison) {
-    // TODO: допишите функцию сортировки пузырьком
-    const length = arr.length;
+    bubbleSort(arr, comparison) {
 
-    for (let n = 0; n < length - 1; n++) {
-      for (let i = 0; i < length - 1 - n; i++) {
+        const length = arr.length;
 
-        if(arr[i] > arr[i + 1]) {
-          let temp = arr[i];
-          arr[i] = arr[i + 1];
-          arr[i + 1] = temp;
+        for (let n = 0; n < length - 1; n++) {
+            for (let i = 0; i < length - 1 - n; i++) {
+
+                if(!comparison(arr[i].color, arr[i + 1].color)) {
+                    let temp = arr[i];
+                    arr[i] = arr[i + 1];
+                    arr[i + 1] = temp;
+                }
+            }
         }
 
-      }
-    }
+        return arr;
+    },
 
-    return arr;
-  },
+    quickSort(arr) {
 
-  quickSort(arr, comparison) {
-    // TODO: допишите функцию быстрой сортировки
-    const index = Math.floor(Math.random() * arr.length);
+        const left = [],
+            middle = [],
+            right = [];
 
-    const more = [];
-    const less = [];
+        const length = arr.length;
 
-    for (let i = 0; i < arr.length; i++) {
-      if (i === index) {
-        continue
-      }
-      (arr[i] < arr[index])? more.push(arr[i]): less.push(arr[i]);
-    }
+        if (length < 2) {
+            return arr;
+        }
 
-    return [
-      ...quickSort(less),
-      arr[index],
-      ...quickSort(more),
-    ];
-  },
+        const index = arr[Math.floor(length / 2)].color;
 
-  // выполняет сортировку и производит замер времени
-  startSort(sort, arr, comparison) {
-    const start = new Date().getTime();
-    sort(arr, comparison);
-    const end = new Date().getTime();
-    sortTime = `${end - start} ms`;
-  },
+        arr.forEach(el => {
+            if (el.color === index) {
+                middle.push(el);
+            } else if ( (el.color !== index) && (el.color.length >= index.length) ) {
+                right.push(el);
+            } else if ( (el.color !== index) && (el.color.length < index.length) ) {
+                left.push(el);
+            }
+        });
+
+        return fruits = [
+            ...sortAPI.quickSort(left),
+            ...middle,
+            ...sortAPI.quickSort(right),
+        ];
+    },
+
+    // выполняет сортировку и производит замер времени
+    startSort(sort, arr, comparison) {
+        const start = new Date().getTime();
+        arr = sort(arr, comparison);
+        const end = new Date().getTime();
+        sortTime = `${end - start} ms`;
+
+        return arr;
+    },
 };
 
 // инициализация полей
@@ -268,38 +282,44 @@ sortKindLabel.textContent = sortKind;
 sortTimeLabel.textContent = sortTime;
 
 sortChangeButton.addEventListener('click', () => {
-  // TODO: переключать значение sortKind между 'bubbleSort' / 'quickSort'
+    if (sortKind === 'bubbleSort') {
+        sortKind = 'quickSort';
+        sortKindLabel.textContent = sortKind;
+    } else {
+        sortKind = 'bubbleSort';
+        sortKindLabel.textContent = sortKind;
+    }
 });
 
 sortActionButton.addEventListener('click', () => {
-  // TODO: вывести в sortTimeLabel значение 'sorting...'
-  const sort = sortAPI[sortKind];
-  sortAPI.startSort(sort, fruits, comparisonColor);
-  display();
-  // TODO: вывести в sortTimeLabel значение sortTime
+
+    const sort = sortAPI[sortKind];
+    fruits = sortAPI.startSort(sort, fruits, comparisonColor);
+    display();
+    sortTimeLabel.innerHTML = sortTime;
 });
 
 /*** ДОБАВИТЬ ФРУКТ ***/
 
 // проверка на пустоту Object
 const checkEmptyObj = (arg) => {
-  return arg.length !== 0;
+    return arg.length !== 0;
 };
 
 // добавление элемента
 const addFruit = (kind,color,weight) => {
-  const obj = {
-    "kind": kind,
-    "color": color,
-    "weight": weight
-  };
-  if (checkEmptyObj(kind) && checkEmptyObj(color) && checkEmptyObj(weight)){
-    return fruits.push(obj);
-  }
-  return alert('Вы не указали все поля, при вводе нового фрукта, попробуйте снова!')
+    const obj = {
+        "kind": kind,
+        "color": color,
+        "weight": weight
+    };
+    if (checkEmptyObj(kind) && checkEmptyObj(color) && checkEmptyObj(weight)){
+        return fruits.push(obj);
+    }
+    return alert('Вы не указали все поля, при вводе нового фрукта, попробуйте снова!')
 };
 
 addActionButton.addEventListener('click', () => {
-  addFruit(kindInput.value, colorInput.value, weightInput.value);
-  display();
+    addFruit(kindInput.value, colorInput.value, weightInput.value);
+    display();
 });
